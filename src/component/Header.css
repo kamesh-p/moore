@@ -1,0 +1,39 @@
+.navbar,
+header {
+  margin-bottom: 10px !important;
+}
+.nav-div-class {
+  margin-left: 750px;
+}
+.nav-link {
+  color: white !important;
+  margin: 0px 15px;
+}
+#container {
+  display: flex;
+}
+
+.Title-logo {
+  width: 100px;
+  color: white !important;
+  margin-top: 10px;
+  margin-left: 20px;
+}
+.link-logo {
+  list-style: none !important;
+  color: white !important;
+  text-decoration: none !important;
+}
+#btn-drop {
+  margin-top: 15px;
+}
+.Login-page {
+  color: black !important;
+  text-decoration: none !important;
+}
+#dropdown-menu-align-end {
+  /* margin-top: 13px !important; */
+  background-color: transparent !important;
+  border: 0px !important;
+  margin-left: 10px;
+}

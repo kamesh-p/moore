@@ -1,0 +1,80 @@
+.Cart {
+  display: flex !important;
+}
+.Btn-Add {
+  margin-top: 20px !important;
+  margin-bottom: 10px !important;
+}
+.Card-indiv {
+  margin: 20px !important;
+  /* height: 400px !important; */
+  width: 250px !important;
+}
+.root {
+  max-width: 100% !important;
+  height: 32vh;
+  margin: 0px !important;
+  background-color: #d6d6d6 !important;
+  margin-bottom: 40px !important;
+}
+
+.title {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+  color: #333;
+  animation: fadeInUp 1s both;
+  text-align: left !important;
+  font-weight: bold !important;
+}
+
+.subtitle {
+  font-size: 1.1rem !important;
+  margin-bottom: 32px;
+  color: #666;
+  animation: fadeInUp 1s both;
+  animation-delay: 0.2s;
+  text-align: left;
+  margin-bottom: 20px !important;
+}
+
+.ctaButton {
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-transform: none;
+  margin-right: 600px !important;
+  color: #fff;
+  animation: fadeInUp 1s both;
+  animation-delay: 0.4s;
+}
+.CardContent-title {
+  font-weight: bold !important;
+  min-height: 70px;
+}
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.container-intro {
+  display: flex !important;
+}
+.container-content {
+  width: 65%;
+}
+.CardContent-details {
+  height: 200px !important;
+}
+.btn-background {
+  margin-top: 30px !important;
+}
+.Favarite-title {
+  font-weight: bold !important;
+  text-align: left !important;
+  margin-left: 25px !important;
+}
