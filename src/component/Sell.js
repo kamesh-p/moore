@@ -1,11 +1,8 @@
 import React from "react";
 
-const Sell = () => {
-  return (
-    <div>
-      <h1>sell</h1>
-    </div>
-  );
+const Sell = ({ books }) => {
+  console.log("sell", books);
+  return <div></div>;
 };
 
 export default Sell;

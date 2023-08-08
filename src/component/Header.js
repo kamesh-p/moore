@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "./Header.css";
-import HomeIcon from "@mui/icons-material/Home";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import LocalLibraryIcon from "@mui/icons-material/LocalLibrary";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import SellIcon from "@mui/icons-material/Sell";
@@ -13,7 +13,7 @@ import HistoryTwoToneIcon from "@mui/icons-material/HistoryTwoTone";
 import LoginIcon from "@mui/icons-material/Login";
 import Tooltip from "@mui/material/Tooltip";
 
-const Header = () => {
+const Header = ({ length }) => {
   return (
     <div>
       <header>
@@ -26,13 +26,6 @@ const Header = () => {
             </div>
             <div className="nav-div-class">
               <ul className="navbar-nav mr-auto">
-                <li className="nav-item active">
-                  <Link className="nav-link" to="/about">
-                    <Tooltip title="Home">
-                      <HomeIcon />
-                    </Tooltip>
-                  </Link>
-                </li>
                 {/* <li className="nav-item active">
                 <Link className="nav-link" to="/Cart">
                   Cart
@@ -56,6 +49,14 @@ const Header = () => {
                   <Link className="nav-link" to="/Library">
                     <Tooltip title="Library">
                       <LocalLibraryIcon />
+                    </Tooltip>
+                  </Link>
+                </li>
+                <li className="nav-item active">
+                  <Link className="nav-link" to="/Cart">
+                    <Tooltip title="Cart">
+                      <ShoppingCartIcon />
+                      <sup className="sup-length">{length}</sup>
                     </Tooltip>
                   </Link>
                 </li>

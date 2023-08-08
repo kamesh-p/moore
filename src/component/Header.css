@@ -37,3 +37,9 @@ header {
   border: 0px !important;
   margin-left: 10px;
 }
+.sup-length {
+  background-color: green;
+  color: white;
+  font-size: 1rem;
+  border-radius: 5px;
+}
