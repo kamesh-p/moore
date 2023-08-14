@@ -4,48 +4,55 @@ import { Link } from "react-router-dom";
 
 import "./Signup.css";
 
+import axios from "axios";
+
 const SignupPage = () => {
-  const [formData, setFormData] = useState({
-    name: "",
+  const [name, setName] = useState("");
 
-    userId: "",
+  const [email, setEmail] = useState("");
 
-    password: "",
+  const [password, setPassword] = useState("");
 
-    confirmPassword: "",
-  });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    if (name === "userId") {
-      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-      if (!emailPattern.test(value)) {
-        setFormData({
-          ...formData,
-          [name]: value,
-          userIdError: "Invalid email format",
-        });
-
-        return;
-      }
-    }
-    setFormData({ ...formData, [name]: value, userIdError: "" });
-  };
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showGenre, setShowGenre] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (formData.password !== formData.confirmPassword) {
+    if (password !== confirmPassword) {
       alert("Passwords do not match. Please try again.");
 
       return;
     }
 
-    console.log("Form data:", formData);
+    const UserObject = {
+      name: name,
 
-    setFormData({ name: "", userId: "", password: "", confirmPassword: "" });
+      email: email,
+
+      password: password,
+    };
+
+    axios
+      .post("http://localhost:4000/users/create-user", {
+        name: name,
+        email: email,
+        password: password,
+      })
+
+      .then((result) => {
+        console.log(result);
+
+        setName("");
+
+        setEmail("");
+
+        setPassword("");
+
+        setConfirmPassword("");
+        setShowGenre(true);
+      })
+      .catch((error) => alert("enter the credentials"));
   };
 
   return (
@@ -60,26 +67,22 @@ const SignupPage = () => {
           id="name"
           name="name"
           placeholder="Enter name.."
-          value={formData.name}
-          onChange={handleChange}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
           required
         />
 
-        <label htmlFor="userId">User ID:</label>
+        <label htmlFor="emailId">Email ID:</label>
 
         <input
-          type="text"
-          id="userId"
-          name="userId"
-          value={formData.userId}
-          placeholder="Enter ID"
-          onChange={handleChange}
+          type="email"
+          id="emailId"
+          name="emailId"
+          placeholder="Enter email ID"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           required
         />
-
-        {formData.userIdError && (
-          <p className="error">{formData.userIdError}</p>
-        )}
 
         <label htmlFor="password">Password:</label>
 
@@ -88,8 +91,8 @@ const SignupPage = () => {
           id="password"
           name="password"
           placeholder="Enter Valid password"
-          value={formData.password}
-          onChange={handleChange}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           required
         />
 
@@ -100,14 +103,13 @@ const SignupPage = () => {
           id="confirmPassword"
           placeholder="Re-enter password"
           name="confirmPassword"
-          value={formData.confirmPassword}
-          onChange={handleChange}
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
           required
         />
-
-        <Link to="/Login">
-          <button type="submit">Sign Up</button>
-        </Link>
+        <button type="submit" onClick={handleSubmit}>
+          <Link to="/Genre">Sign Up</Link>
+        </button>
       </form>
     </div>
   );

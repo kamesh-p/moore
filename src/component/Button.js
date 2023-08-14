@@ -12,7 +12,7 @@ export default function BuyButton() {
   return (
     <Button
       variant="contained"
-      color={selected ? "error" : "info"}
+      color={selected ? "success" : "error"}
       onClick={handleClick}
     >
       {selected ? "Selected" : "Buy"}

@@ -6,25 +6,27 @@ import {
   CardContent,
   Button,
   Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
 } from "@mui/material";
-
-const Shop = ({ books, addToCart }) => {
+import "./Shop.css";
+import { Link } from "react-router-dom";
+const Shop = ({ books, addToCart, handleAddToCartrent, rentedBooks }) => {
   const [booksState, setBooksState] = useState([]);
   const [selectedBook, setSelectedBook] = useState(null);
+  const [dialog, setDialog] = useState(false);
+
+  const handleClose = () => {
+    setDialog(false);
+  };
+
   useEffect(() => {
     setBooksState(books);
   }, [books]);
-  const handleAddToCart = (book) => {
-    setBooksState((prevBooks) =>
-      prevBooks.map((prevBook) =>
-        prevBook.id === book.id
-          ? { ...prevBook, selected: !prevBook.selected }
-          : prevBook
-      )
-    );
-
-    addToCart(book);
-  };
+  console.log("rent-shop", rentedBooks);
   return (
     <div>
       <div className="Cart">
@@ -46,9 +48,6 @@ const Shop = ({ books, addToCart }) => {
                 >
                   {book.title}
                 </Typography>
-                {/* <Typography variant="body2" color="text.secondary">
-                  {book.description}
-                </Typography> */}
               </CardContent>
             </CardActionArea>
             <div className="btn-container-About">
@@ -56,23 +55,48 @@ const Shop = ({ books, addToCart }) => {
                 size="small"
                 color="info"
                 className="Btn-ViewMore"
-                onClick={() => setSelectedBook(book)}
+                onClick={() => {
+                  setSelectedBook(book);
+                  setDialog(true);
+                }}
               >
                 View More
               </Button>
-              <Button
-                size="small"
-                variant="contained"
-                color="info"
-                className="Btn-Buy"
-                onClick={() => handleAddToCart(book)}
-              >
-                Buy
-              </Button>
+              <div className="btn-shop-book">
+                <Button
+                  size="small"
+                  variant="contained"
+                  color="info"
+                  className="Btn-Buy-shop"
+                  onClick={() => handleAddToCartrent(book)}
+                >
+                  Buy
+                </Button>
+
+                <Button
+                  className="Btn-Buy-rent"
+                  variant="contained"
+                  color="error"
+                  onClick={() => handleAddToCartrent(book, true)}
+                >
+                  Rent
+                </Button>
+              </div>
             </div>
           </Card>
         ))}
       </div>
+      <Dialog open={dialog} onClose={handleClose}>
+        <DialogTitle>Book Description</DialogTitle>
+        <DialogContent>
+          <DialogContentText>{selectedBook?.description}</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

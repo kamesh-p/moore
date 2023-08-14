@@ -12,8 +12,13 @@ import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined
 import HistoryTwoToneIcon from "@mui/icons-material/HistoryTwoTone";
 import LoginIcon from "@mui/icons-material/Login";
 import Tooltip from "@mui/material/Tooltip";
+import { useSelector } from "react-redux";
+const Header = ({ length, count }) => {
+  const user = useSelector((state) => state.auth.user);
 
-const Header = ({ length }) => {
+  // console.log("username", user);
+  // console.log("username12", user.Users.name);
+  const name = user?.Users?.name || "viewers";
   return (
     <div>
       <header>
@@ -21,7 +26,7 @@ const Header = ({ length }) => {
           <div id="container">
             <div className="Title-logo">
               <Link to="/about" className="link-logo">
-                <LibraryBooksIcon /> BOOK
+                <LibraryBooksIcon /> E-Moore
               </Link>
             </div>
             <div className="nav-div-class">
@@ -32,14 +37,20 @@ const Header = ({ length }) => {
                 </Link>
               </li> */}
                 <li className="nav-item active">
-                  <Link className="nav-link" to="/Buy">
+                  <Link
+                    className="nav-link"
+                    to={name === "admin" ? "/sell-admin" : "/Buy"}
+                  >
                     <Tooltip title="Shop">
                       <ShoppingBagIcon />
                     </Tooltip>
                   </Link>
                 </li>
                 <li className="nav-item active">
-                  <Link className="nav-link" to="/Sell">
+                  <Link
+                    className="nav-link"
+                    to={name === "admin" ? "/admin-dashboard" : "/Sell"}
+                  >
                     <Tooltip title="Sell">
                       <SellIcon />
                     </Tooltip>
@@ -49,6 +60,7 @@ const Header = ({ length }) => {
                   <Link className="nav-link" to="/Library">
                     <Tooltip title="Library">
                       <LocalLibraryIcon />
+                      <sup className="sup-length">{count}</sup>
                     </Tooltip>
                   </Link>
                 </li>
@@ -65,11 +77,6 @@ const Header = ({ length }) => {
                   title={<AccountCircleOutlinedIcon />}
                   id="dropdown-menu-align-end"
                 >
-                  <Dropdown.Item eventKey="4">
-                    <Link className="Login-page" to="/">
-                      <HistoryTwoToneIcon /> History
-                    </Link>
-                  </Dropdown.Item>
                   {/* <Dropdown.Item eventKey="4">
                     <Link className="Login-page" to="/Login">
                       <LoginIcon /> Login/Signin
@@ -79,6 +86,12 @@ const Header = ({ length }) => {
                     <Link className="Login-page" to="/Login">
                       <LoginIcon />
                       Login/Signin
+                    </Link>
+                  </Dropdown.Item>
+                  <Dropdown.Item eventKey="4">
+                    <Link className="Login-page" to="/history">
+                      <HistoryTwoToneIcon />
+                      History
                     </Link>
                   </Dropdown.Item>
                 </DropdownButton>

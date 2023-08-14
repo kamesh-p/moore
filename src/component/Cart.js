@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import {
   Grid,
   Typography,
@@ -20,7 +21,7 @@ import RemoveIcon from "@mui/icons-material/Remove";
 import "./Cart.css";
 import { useSelector } from "react-redux";
 
-const Cart = ({ cartItems }) => {
+const Cart = ({ cartItems, handleRemoveItem }) => {
   const [cart, setCart] = useState(cartItems);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [paymentType, setPaymentType] = useState("");
@@ -29,26 +30,21 @@ const Cart = ({ cartItems }) => {
   const [orders, setOrders] = useState([]);
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
+  const [detailed, setdetailedorder] = useState([]);
   const user = useSelector((state) => state.auth.user);
 
   const handleIncreaseQuantity = (index) => {
-    const updatedCart = [...cart];
+    const updatedCart = [...cartItems];
     updatedCart[index].quantity += 1;
     setCart(updatedCart);
   };
 
   const handleDecreaseQuantity = (index) => {
-    const updatedCart = [...cart];
+    const updatedCart = [...cartItems];
     if (updatedCart[index].quantity > 1) {
       updatedCart[index].quantity -= 1;
       setCart(updatedCart);
     }
-  };
-
-  const handleRemoveItem = (index) => {
-    const updatedCart = [...cart];
-    updatedCart.splice(index, 1);
-    setCart(updatedCart);
   };
 
   const getTotalPrice = (item) => {
@@ -56,31 +52,54 @@ const Cart = ({ cartItems }) => {
   };
 
   const getTotalCartPrice = () => {
-    const totalPrice = cart.reduce(
+    const totalPrice = cartItems.reduce(
       (accumulator, item) => accumulator + getTotalPrice(item),
       0
     );
     return totalPrice;
   };
 
-  const handlePlaceOrder = () => {
-    if (isAuthenticated) {
-      const order = {
-        name: name,
-        address: address,
-        userd: { user },
-        paymentType,
-        items: cart.map((item) => ({
-          name: item.title,
-          quantity: item.quantity,
-          price: item.price,
-        })),
-      };
-      setOrderDetails(order);
-      setDialogOpen(true);
-    }
+  const HandleConfirmationbutton = () => {
+    setConfirmation(true);
+    setDialogOpen(false);
+
+    // Collect the order details
+    const newOrder = {
+      name: name,
+      address: address,
+      paymentType: paymentType,
+      items: cartItems, // Assuming you want to store the cart items in the order
+      totalPrice: getTotalCartPrice(),
+    };
+
+    // Update the orders array with the new order
+    setOrders((prevOrders) => [...prevOrders, newOrder]);
+    axios.post("http://localhost:4000/Details/create-user", newOrder);
+
+    // Reset the input fields and selections
+    setOrderDetails({});
+    setName("");
+    setAddress("");
+    setPaymentType("");
+    console.log("new order", newOrder);
+    setConfirmation(false);
+    setdetailedorder(newOrder);
   };
+
+  // ... rest of your component code ...
+  console.log("ddd", detailed);
   console.log("order:", orders);
+  console.log("oderrr", orderDetails);
+
+  axios
+    .post("http://localhost:4000/Details/create-user", detailed)
+    .then((response) => {
+      console.log(response);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+
   const HandleConfirmation = () => {
     setConfirmation(true);
     setDialogOpen(false);
@@ -92,6 +111,9 @@ const Cart = ({ cartItems }) => {
   const HandleCloseConfirmation = () => {
     setConfirmation(false);
   };
+  const HandleopenConfirmation = () => {
+    setConfirmation(true);
+  };
   const handleCloseDialog = () => {
     setDialogOpen(false);
   };
@@ -102,7 +124,7 @@ const Cart = ({ cartItems }) => {
   console.log("cart", isAuthenticated);
   return (
     <div className="cart-container-Cart">
-      {cart.map((item, index) => (
+      {cartItems.map((item, index) => (
         <div className="grid-cart-item-List" key={index}>
           <Grid container spacing={2} alignItems="center">
             <Grid item xs={3}>
@@ -160,7 +182,7 @@ const Cart = ({ cartItems }) => {
             variant="contained"
             color="success"
             size="small"
-            onClick={handlePlaceOrder}
+            onClick={() => setDialogOpen(true)}
           >
             Place order
           </Button>
@@ -263,7 +285,7 @@ const Cart = ({ cartItems }) => {
             <Button
               // variant="outlined"
               color="success"
-              onClick={HandleConfirmation}
+              onClick={HandleopenConfirmation}
             >
               Order
             </Button>
@@ -281,7 +303,7 @@ const Cart = ({ cartItems }) => {
           </DialogContent>
           <DialogActions>
             <Button onClick={HandleCloseConfirmation}>Cancel</Button>
-            <Button color="success" onClick={HandleCloseConfirmation}>
+            <Button color="success" onClick={HandleConfirmationbutton}>
               Confirm
             </Button>
           </DialogActions>

@@ -46,7 +46,7 @@ input {
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-button {
+.btn-sign-user-page {
   padding: 10px;
 
   background-color: #4caf50;
@@ -60,6 +60,6 @@ button {
   cursor: pointer;
 }
 
-button:hover {
+.btn-sign-user-page:hover {
   background-color: #45a049;
 }

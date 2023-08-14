@@ -1,10 +1,18 @@
 import React, { useState, useEffect } from "react";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
+
 import Typography from "@mui/material/Typography";
-import { CardActionArea } from "@mui/material";
-import { Button, Container } from "@mui/material";
+
+import {
+  Button,
+  Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
+import axios from "axios";
+import Footer from "./Footer";
 import "./About.css";
 import { useSelector } from "react-redux";
 import Paper from "@mui/material/Paper";
@@ -12,17 +20,60 @@ import { styled } from "@mui/material/styles";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-const About = ({ addToCart, cartItems, books }) => {
+const About = ({ addToCart, cartItems, books, handleAddToCartrent }) => {
   const [booksState, setBooksState] = useState([]);
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const user = useSelector((state) => state.auth.user);
   const [selectedBook, setSelectedBook] = useState(null);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [preference, setprederence] = useState([]);
+
+  const isLoading = books.length === 0;
+
+  useEffect(() => {
+    fetchBooks();
+  }, []);
+
+  const fetchBooks = async () => {
+    try {
+      const response = await axios.get("http://localhost:4000/genre/");
+      setprederence(response.data);
+    } catch (error) {
+      console.error("Error fetching books:", error);
+    }
+  };
+  console.log("pre", preference);
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+  const bookInfo = {
+    language: "English",
+    education: "Engineering",
+    genre: "fictional",
+  };
+
+  const educationBooks = booksState.filter(
+    (book) => book.classification === bookInfo.education
+  );
+
+  // Filter books based on genre matching the genre property
+  const genreBooks = booksState.filter(
+    (book) => book.classification === bookInfo.genre
+  );
+
+  // Filter books based on language matching the language property
+  const languageBooks = booksState.filter(
+    (book) => book.language === bookInfo.language
+  );
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
 
   let Loginname = "Viewers";
 
   if (isAuthenticated && user) {
     console.log("Logged in user's name:", user.Name);
-    Loginname = user.Name;
+    Loginname = user.Users.name;
   }
   useEffect(() => {
     setBooksState(books);
@@ -33,7 +84,15 @@ const About = ({ addToCart, cartItems, books }) => {
     slidesToShow: 3,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 1000, // Adjust the interval (in milliseconds) between slides
+    autoplaySpeed: 1000,
+  };
+  const settingss = {
+    infinite: true,
+    speed: 1200,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 1000,
   };
   const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -42,55 +101,13 @@ const About = ({ addToCart, cartItems, books }) => {
     textAlign: "center",
     color: theme.palette.text.secondary,
   }));
-  const handleAddToCart = (book) => {
-    setBooksState((prevBooks) =>
-      prevBooks.map((prevBook) =>
-        prevBook.id === book.id
-          ? { ...prevBook, selected: !prevBook.selected }
-          : prevBook
-      )
-    );
 
-    addToCart(book);
-  };
-
-  // const books = [
-  //   {
-  //     img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSgUutsti4IUZIzrbZWtMWTdPKHekpN6DUZvA&usqp=CAU",
-  //     title: "Rich Dad Poor Dad",
-  //     description:
-  //       "Rich Dad Poor Dad is a personal finance book written by Robert T. Kiyosaki. The book was first published in 1997",
-  //     price: 300,
-  //   },
-  //   {
-  //     img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8mRxqmY47JWQlD3q9tDEeaEXoExqBwPSsGA&usqp=CAU",
-  //     title:
-  //       "The Millionaire Next Door: The Surprising Secrets of America's Wealthy",
-  //     description:
-  //       "Although not directly related to Rich Dad Poor Dad,this book shares a similar theme of financial wisdom and wealth-building.",
-  //     price: 300,
-  //   },
-  //   {
-  //     img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIWAbs8uKXkFJYHS78AgMYqEFzyalnffT74Q&usqp=CAU",
-  //     title: "Cashflow Quadrant: Rich Dad's Guide to Financial Freedom",
-  //     description:
-  //       "In this book, Robert T. Kiyosaki expands on the concepts introduced in Rich Dad Poor Dad by introducing the Cashflow Quadrant",
-  //     price: 300,
-  //   },
-  //   {
-  //     img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIWAbs8uKXkFJYHS78AgMYqEFzyalnffT74Q&usqp=CAU",
-  //     title: "Cashflow Quadrant: Rich Dad's Guide to Financial Freedom",
-  //     description:
-  //       "In this book, Robert T. Kiyosaki expands on the concepts introduced in Rich Dad Poor Dad by introducing the Cashflow Quadrant",
-  //     price: 300,
-  //   },
-  // {
-  //   img: "https://example.com/book4-image.jpg",
-  //   title: "Book 4 Title",
-  //   description: "Description of Book 4",
-  // },
-  // ];
   console.log("app", cartItems);
+  console.log("bookstate", booksState);
+  const fictionalBooks = booksState.filter(
+    (book) => book.classification === "fictional"
+  );
+
   return (
     <div>
       <Container maxWidth="md" className="root">
@@ -211,55 +228,245 @@ const About = ({ addToCart, cartItems, books }) => {
           </div>
         </Slider>
       </div>
+
       <Typography variant="h5" component="h6" className="Favarite-title">
-        {Loginname} Favorite Books
+        {Loginname} Genre Perference Books
       </Typography>
       <div className="Cart">
-        {booksState.map((book, index) => (
-          <Card key={index} sx={{ maxWidth: 345 }} className="Card-indiv">
-            <CardActionArea className="container-about-content-detail">
-              <CardMedia
-                component="img"
-                height="140"
-                image={book.imagelink}
-                alt={book.title}
-              />
-              <CardContent className="CardContent-details">
-                <Typography
-                  gutterBottom
-                  variant="p"
-                  component="div"
-                  className="CardContent-title"
-                >
-                  {book.title}
-                </Typography>
-                {/* <Typography variant="body2" color="text.secondary">
-                  {book.description}
-                </Typography> */}
-              </CardContent>
-            </CardActionArea>
-            <div className="btn-container-About">
-              <Button
-                size="small"
-                color="info"
-                className="Btn-ViewMore"
-                onClick={() => setSelectedBook(book)}
-              >
-                View More
-              </Button>
-              <Button
-                size="small"
-                variant="contained"
-                color="info"
-                className="Btn-Buy"
-                onClick={() => handleAddToCart(book)}
-              >
-                Buy
-              </Button>
+        {genreBooks.map((book, index) => (
+          <div className="container-fav-list">
+            <div className="card">
+              <div className="slide slide1">
+                <div className="content">
+                  <div className="Img-AbouT">
+                    <img
+                      className="img-book-fav"
+                      src={book.imagelink}
+                      alt="img"
+                    ></img>
+                  </div>
+                </div>
+              </div>
+
+              <div className="slide slide2">
+                <div className="content">
+                  <div className="content-display-contex">
+                    <p>{book.title}</p>
+                  </div>
+                  <div>
+                    <Button
+                      size="small"
+                      color="info"
+                      className="Btn-ViewMore-fav"
+                      onClick={() => {
+                        setSelectedBook(book);
+                        handleOpenDialog();
+                      }}
+                    >
+                      View More
+                    </Button>
+                    <div className="display-button-row">
+                      <Button
+                        size="small"
+                        variant="contained"
+                        color="info"
+                        className="Btn-Buy-fav"
+                        onClick={() => handleAddToCartrent(book)}
+                      >
+                        Buy
+                      </Button>
+                      <Button
+                        className="Btn-Buy-rent-about"
+                        variant="contained"
+                        color="error"
+                        onClick={() => handleAddToCartrent(book, true)}
+                      >
+                        Rent
+                      </Button>
+                    </div>
+                    <Dialog
+                      open={openDialog}
+                      onClose={handleCloseDialog}
+                      maxWidth="md"
+                    >
+                      <DialogTitle>Book Description</DialogTitle>
+                      <DialogContent>
+                        <DialogContentText>
+                          {selectedBook?.description}
+                        </DialogContentText>
+                      </DialogContent>
+                      <DialogActions>
+                        <Button onClick={handleCloseDialog} color="primary">
+                          Close
+                        </Button>
+                      </DialogActions>
+                    </Dialog>
+                  </div>
+                </div>
+              </div>
             </div>
-          </Card>
+          </div>
         ))}
       </div>
+      <Typography variant="h5" component="h6" className="Favarite-title">
+        {Loginname} Language Perference Books
+      </Typography>
+      <div className="Cart">
+        {languageBooks.map((book, index) => (
+          <div className="container-fav-list">
+            <div className="card">
+              <div className="slide slide1">
+                <div className="content">
+                  <div className="Img-AbouT">
+                    <img
+                      className="img-book-fav"
+                      src={book.imagelink}
+                      alt="img"
+                    ></img>
+                  </div>
+                </div>
+              </div>
+
+              <div className="slide slide2">
+                <div className="content">
+                  <div className="content-display-contex">
+                    <p>{book.title}</p>
+                  </div>
+                  <div>
+                    <Button
+                      size="small"
+                      color="info"
+                      className="Btn-ViewMore-fav"
+                      onClick={() => {
+                        setSelectedBook(book);
+                        handleOpenDialog();
+                      }}
+                    >
+                      View More
+                    </Button>
+                    <div className="display-button-row">
+                      <Button
+                        size="small"
+                        variant="contained"
+                        color="info"
+                        className="Btn-Buy-fav"
+                        onClick={() => handleAddToCartrent(book)}
+                      >
+                        Buy
+                      </Button>
+                      <Button
+                        className="Btn-Buy-rent-about"
+                        variant="contained"
+                        color="error"
+                        onClick={() => handleAddToCartrent(book, true)}
+                      >
+                        Rent
+                      </Button>
+                    </div>
+                    <Dialog
+                      open={openDialog}
+                      onClose={handleCloseDialog}
+                      maxWidth="md"
+                    >
+                      <DialogTitle>Book Description</DialogTitle>
+                      <DialogContent>
+                        <DialogContentText>
+                          {selectedBook?.description}
+                        </DialogContentText>
+                      </DialogContent>
+                      <DialogActions>
+                        <Button onClick={handleCloseDialog} color="primary">
+                          Close
+                        </Button>
+                      </DialogActions>
+                    </Dialog>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      <Typography variant="h5" component="h6" className="Favarite-title">
+        {Loginname} Educational Books
+      </Typography>
+      <div className="Cart">
+        {educationBooks.map((book, index) => (
+          <div className="container-fav-list">
+            <div className="card">
+              <div className="slide slide1">
+                <div className="content">
+                  <div className="Img-AbouT">
+                    <img
+                      className="img-book-fav"
+                      src={book.imagelink}
+                      alt="img"
+                    ></img>
+                  </div>
+                </div>
+              </div>
+
+              <div className="slide slide2">
+                <div className="content">
+                  <div className="content-display-contex">
+                    <p>{book.title}</p>
+                  </div>
+                  <div>
+                    <Button
+                      size="small"
+                      color="info"
+                      className="Btn-ViewMore-fav"
+                      onClick={() => {
+                        setSelectedBook(book);
+                        handleOpenDialog();
+                      }}
+                    >
+                      View More
+                    </Button>
+                    <div className="display-button-row">
+                      <Button
+                        size="small"
+                        variant="contained"
+                        color="info"
+                        className="Btn-Buy-fav"
+                        onClick={() => handleAddToCartrent(book)}
+                      >
+                        Buy
+                      </Button>
+                      <Button
+                        className="Btn-Buy-rent-about"
+                        variant="contained"
+                        color="error"
+                        onClick={() => handleAddToCartrent(book, true)}
+                      >
+                        Rent
+                      </Button>
+                    </div>
+                    <Dialog
+                      open={openDialog}
+                      onClose={handleCloseDialog}
+                      maxWidth="md"
+                    >
+                      <DialogTitle>Book Description</DialogTitle>
+                      <DialogContent>
+                        <DialogContentText>
+                          {selectedBook?.description}
+                        </DialogContentText>
+                      </DialogContent>
+                      <DialogActions>
+                        <Button onClick={handleCloseDialog} color="primary">
+                          Close
+                        </Button>
+                      </DialogActions>
+                    </Dialog>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      <Footer />
     </div>
   );
 };

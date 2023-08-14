@@ -1,18 +1,11 @@
-/* Style for the entire table */
-.buses-table table {
-  border-collapse: collapse;
-  width: 100%;
+.btn-shop-book {
+  display: flex;
+  flex-direction: row;
 }
-
-/* Style for the table headers */
-.buses-table th {
-  background-color: #f2f2f2;
-  border: 1px solid #dddddd;
-  padding: 8px;
+.Btn-Buy-shop {
+  width: 50% !important;
+  margin-right: 2px !important;
 }
-
-/* Style for the table cells */
-.buses-table td {
-  border: 1px solid #dddddd;
-  padding: 8px;
+.Btn-Buy-rent {
+  width: 120px !important;
 }
